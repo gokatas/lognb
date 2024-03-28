@@ -27,13 +27,10 @@ func (d *device) Write(p []byte) (int, error) {
 }
 
 func main() {
-	const grs = 10
 	var d device
-	// var l log.Logger // the standard logger is a blocking logger
-	// l.SetOutput(&d)
-	l := logger.New(&d, grs)
+	l := logger.New(&d, 10)
 
-	for i := 0; i < grs; i++ {
+	for i := 0; i < 10; i++ {
 		go func(id int) {
 			for {
 				l.Write(fmt.Sprintf("log from gr #%d", id))
@@ -42,10 +39,10 @@ func main() {
 		}(i)
 	}
 
-	sigint := make(chan os.Signal, 1)
-	signal.Notify(sigint, os.Interrupt)
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, os.Interrupt)
 	for {
-		<-sigint
+		<-sigs
 		d.problem = !d.problem
 	}
 }

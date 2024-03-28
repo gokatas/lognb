@@ -34,6 +34,7 @@ func New(w io.Writer, buf int) *Logger {
 	return &l
 }
 
+// Write writes log to logger's w if possible. If not possible it doesn't block.
 func (l *Logger) Write(log string) {
 	select {
 	case l.logs <- log:
