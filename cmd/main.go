@@ -12,7 +12,7 @@ import (
 	"os/signal"
 	"time"
 
-	"logger"
+	"lognb"
 )
 
 type device struct {
@@ -23,30 +23,29 @@ func (d *device) Write(p []byte) (int, error) {
 	for d.problem {
 		time.Sleep(time.Second)
 	}
-	return fmt.Print(string(p))
+	return fmt.Fprint(os.Stdout, string(p))
 }
 
 func main() {
 	var d device
-	l := logger.New(&d, 10)
+	// l := log.New(&d, log.Default().Prefix(), log.Default().Flags())
+	l := lognb.New(&d, 10)
 
 	for i := 0; i < 10; i++ {
-		go func(id int) {
+		go func(i int) {
 			for {
-				l.Write(fmt.Sprintf("log from gr #%d", id))
+				l.Print(fmt.Sprintf("goroutine %d does something", i))
 				doSomething()
 			}
 		}(i)
 	}
 
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, os.Interrupt)
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
 	for {
-		<-sigs
+		<-c
 		d.problem = !d.problem
 	}
 }
 
-func doSomething() {
-	time.Sleep(time.Second)
-}
+func doSomething() { time.Sleep(time.Second) }

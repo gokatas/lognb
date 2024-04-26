@@ -1,3 +1,3 @@
-module logger
+module lognb
 
 go 1.22.0

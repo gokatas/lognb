@@ -1,6 +1,6 @@
-// Package logger uses channels to implement non-blocking
+// Package lognb uses channels to implement non-blocking
 // logging. Adapted from https://youtu.be/zDCKZn4-dck.
-package logger
+package lognb
 
 import (
 	"fmt"
@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 )
+
+const timeLayout = "2006/01/02 15:04:05"
 
 type Logger struct {
 	logs chan string
@@ -26,19 +28,20 @@ func New(w io.Writer, buf int) *Logger {
 	l.wg.Add(1)
 	go func() {
 		defer l.wg.Done()
-		for log := range l.logs {
-			fmt.Fprintf(w, "%s: %s\n", time.Now().Format(time.TimeOnly), log)
+		for s := range l.logs {
+			fmt.Fprintf(w, "%s: %s\n", time.Now().Format(timeLayout), s)
 		}
 	}()
 
 	return &l
 }
 
-// Write writes log to logger's w if possible. If not possible it doesn't block.
-func (l *Logger) Write(log string) {
+// Print writes log to logger's w if possible. Otherwise it writes warning to
+// stderr but doesn't block.
+func (l *Logger) Print(s string) {
 	select {
-	case l.logs <- log:
+	case l.logs <- s:
 	default:
-		fmt.Fprintf(os.Stderr, "%s: dropping logs\n", time.Now().Format(time.TimeOnly))
+		fmt.Fprintf(os.Stderr, "%s WARN dropping logs\n", time.Now().Format(timeLayout))
 	}
 }
