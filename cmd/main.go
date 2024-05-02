@@ -12,7 +12,7 @@ import (
 	"os/signal"
 	"time"
 
-	"lognb"
+	"github.com/gokatas/lognb"
 )
 
 type device struct {
