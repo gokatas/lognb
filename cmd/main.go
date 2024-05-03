@@ -30,6 +30,7 @@ func main() {
 	var d device
 	// l := log.New(&d, log.Default().Prefix(), log.Default().Flags())
 	l := lognb.New(&d, 10)
+	defer l.Stop()
 
 	for i := 0; i < 10; i++ {
 		go func(i int) {

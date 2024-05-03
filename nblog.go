@@ -36,6 +36,11 @@ func New(w io.Writer, buf int) *Logger {
 	return &l
 }
 
+func (l *Logger) Stop() {
+	close(l.logs)
+	l.wg.Wait()
+}
+
 // Print writes log to logger's w if possible. Otherwise it writes warning to
 // stderr but doesn't block.
 func (l *Logger) Print(s string) {
