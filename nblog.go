@@ -7,10 +7,7 @@ import (
 	"io"
 	"os"
 	"sync"
-	"time"
 )
-
-const timeLayout = "2006/01/02 15:04:05"
 
 type Logger struct {
 	logs chan string
@@ -29,7 +26,7 @@ func New(w io.Writer, buf int) *Logger {
 	go func() {
 		defer l.wg.Done()
 		for s := range l.logs {
-			fmt.Fprintf(w, "%s: %s\n", time.Now().Format(timeLayout), s)
+			fmt.Fprintln(w, s)
 		}
 	}()
 
@@ -47,6 +44,6 @@ func (l *Logger) Print(s string) {
 	select {
 	case l.logs <- s:
 	default:
-		fmt.Fprintf(os.Stderr, "%s WARN dropping logs\n", time.Now().Format(timeLayout))
+		fmt.Fprintln(os.Stderr, "WARN dropping logs")
 	}
 }
