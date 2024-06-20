@@ -35,7 +35,7 @@ func main() {
 	for i := 0; i < 10; i++ {
 		go func(i int) {
 			for {
-				l.Print(fmt.Sprintf("goroutine %d does something", i))
+				l.Print(fmt.Sprintf("goroutine %d is doing something", i))
 				doSomething()
 			}
 		}(i)
