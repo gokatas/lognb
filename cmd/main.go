@@ -28,7 +28,7 @@ func (d *device) Write(p []byte) (int, error) {
 
 func main() {
 	var d device
-	// l := log.New(&d, log.Default().Prefix(), log.Default().Flags())
+	// l := log.New(&d, "", 0)
 	l := lognb.New(&d, 10)
 	defer l.Stop()
 

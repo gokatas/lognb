@@ -40,9 +40,9 @@ func (l *Logger) Stop() {
 
 // Print writes log to logger's w if possible. Otherwise it writes warning to
 // stderr but doesn't block.
-func (l *Logger) Print(s string) {
+func (l *Logger) Print(log string) {
 	select {
-	case l.logs <- s:
+	case l.logs <- log:
 	default:
 		fmt.Fprintln(os.Stderr, "WARN dropping logs")
 	}
