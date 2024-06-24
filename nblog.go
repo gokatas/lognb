@@ -25,8 +25,8 @@ func New(w io.Writer, buf int) *Logger {
 	l.wg.Add(1)
 	go func() {
 		defer l.wg.Done()
-		for s := range l.logs {
-			fmt.Fprintln(w, s)
+		for log := range l.logs {
+			fmt.Fprintln(w, log)
 		}
 	}()
 
@@ -44,6 +44,6 @@ func (l *Logger) Print(log string) {
 	select {
 	case l.logs <- log:
 	default:
-		fmt.Fprintln(os.Stderr, "WARN dropping logs")
+		fmt.Fprintln(os.Stderr, "WARN: dropping logs")
 	}
 }
