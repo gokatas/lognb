@@ -38,12 +38,12 @@ func (l *Logger) Stop() {
 	l.wg.Wait()
 }
 
-// Print writes log to logger's w if possible. Otherwise it writes warning to
-// stderr but doesn't block.
-func (l *Logger) Print(log string) {
+// Write sends log to a channel to be written to logger's w if possible.
+// Otherwise it writes a warning to stderr but doesn't block.
+func (l *Logger) Write(log string) {
 	select {
 	case l.logs <- log:
 	default:
-		fmt.Fprintln(os.Stderr, "WARN: dropping logs")
+		fmt.Fprintln(os.Stderr, "WARN: dropping logs on the floor")
 	}
 }
